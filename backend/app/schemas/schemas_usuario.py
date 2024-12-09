@@ -51,7 +51,7 @@ class UsuarioUpdate(BaseModel):
             raise ValueError('Nome está no formato inválido')
         return value
 
-class UsuarioOut(UsuarioBase):
+class UsuarioOut(UsuarioListResponse):
     id_usuario: int
 
     class Config:

@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 import logging
 
 from app.database.models.models_database import Usuario
-from app.schemas.schemas_usuario import UsuarioBase, UsuarioUpdate
+from app.schemas.schemas_usuario import UsuarioCreate, UsuarioUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ def get_usuario_by_id(db: Session, usuario_id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
     return usuario
 
-def create_usuario(db: Session, user_form: UsuarioBase) -> Usuario:
+def create_usuario(db: Session, user_form: UsuarioCreate) -> Usuario:
     try:
         if db.query(Usuario).filter(Usuario.email == user_form.email).first():
             logger.warning(f"Tentativa de criar um usuário com e-mail existente: {user_form.email}")
