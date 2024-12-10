@@ -9,7 +9,7 @@ from app.api.depends import get_db
 
 logger = logging.getLogger(__name__)
 
-medico_router = APIRouter(prefix="/medicos")
+medico_router = APIRouter(prefix="/medico")
 
 @medico_router.get("/list", response_model=List[MedicoOut])
 def list_medicos_route(db: Session = Depends(get_db)):

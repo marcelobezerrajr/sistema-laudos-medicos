@@ -12,9 +12,9 @@ def configure_all(app: FastAPI):
     configure_db()
 
 def configure_routes(app: FastAPI):
-    app.include_router(usuario.usuario_router, tags=["Usuários"])
-    app.include_router(medico.medico_router, tags=["Médicos"])
-    app.include_router(paciente.paciente_router, tags=["Pacientes"])
+    app.include_router(usuario.usuario_router, tags=["Usuário"])
+    app.include_router(medico.medico_router, tags=["Médico"])
+    app.include_router(paciente.paciente_router, tags=["Paciente"])
 
 def configure_db():
     Base.metadata.create_all(bind=engine)

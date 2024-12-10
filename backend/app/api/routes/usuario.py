@@ -9,7 +9,7 @@ from app.api.depends import get_db
 
 logger = logging.getLogger(__name__)
 
-usuario_router = APIRouter(prefix="/usuarios")
+usuario_router = APIRouter(prefix="/usuario")
 
 @usuario_router.get("/list", response_model=List[UsuarioListResponse])
 def list_usuarios_route(db: Session = Depends(get_db)):
