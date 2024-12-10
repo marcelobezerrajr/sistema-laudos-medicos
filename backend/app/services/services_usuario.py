@@ -8,7 +8,10 @@ from app.schemas.schemas_usuario import UsuarioCreate, UsuarioUpdate
 logger = logging.getLogger(__name__)
 
 def get_all_usuarios(db: Session):
-    return db.query(Usuario).all()
+    usuarios = db.query(Usuario).all()
+    if not usuarios:
+        logger.warning("Nenhum usuário encontrado.")
+    return usuarios
 
 def get_usuario_by_id(db: Session, usuario_id: int):
     usuario = db.query(Usuario).filter(Usuario.id_usuario == usuario_id).first()
@@ -41,10 +44,7 @@ def create_usuario(db: Session, user_form: UsuarioCreate) -> Usuario:
         raise
 
 def update_usuario(db: Session, usuario_id: int, user_form: UsuarioUpdate):
-    usuario = db.query(Usuario).filter(Usuario.id_usuario == usuario_id).first()
-    if not usuario:
-        logger.error(f"Usuário não encontrado com id: {usuario_id}")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+    usuario = get_usuario_by_id(db, usuario_id)
 
     usuario.nome = user_form.nome or usuario.nome
     usuario.email = user_form.email or usuario.email
@@ -56,11 +56,8 @@ def update_usuario(db: Session, usuario_id: int, user_form: UsuarioUpdate):
     return usuario
 
 def delete_usuario(db: Session, usuario_id: int):
-    usuario = db.query(Usuario).filter(Usuario.id_usuario == usuario_id).first()
-    if not usuario:
-        logger.error(f"Usuário não encontrado com id: {usuario_id}")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
-
+    usuario = get_usuario_by_id(db, usuario_id)
+    
     db.delete(usuario)
     db.commit()
     logger.info(f"Usuário deletado com sucesso: {usuario.email}")

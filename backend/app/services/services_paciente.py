@@ -8,7 +8,10 @@ from app.schemas.schemas_paciente import PacienteCreate, PacienteUpdate
 logger = logging.getLogger(__name__)
 
 def get_all_pacientes(db: Session):
-    return db.query(Paciente).all()
+    pacientes = db.query(Paciente).all()
+    if not pacientes:
+        logger.warning("Nenhum paciente encontrado.")
+    return pacientes
 
 def get_paciente_by_id(db: Session, paciente_id: int):
     paciente = db.query(Paciente).filter(Paciente.id_paciente == paciente_id).first()
@@ -43,10 +46,7 @@ def create_paciente(db: Session, paciente_data: PacienteCreate):
         raise
 
 def update_paciente(db: Session, paciente_id: int, paciente_data: PacienteUpdate):
-    paciente = db.query(Paciente).filter(Paciente.id_paciente == paciente_id).first()
-    if not paciente:
-        logger.error(f"Paciente não encontrado com id: {paciente_id}")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paciente não encontrado")
+    paciente = get_paciente_by_id(db, paciente_id)
     
     paciente.data_nascimento = paciente_data.data_nascimento or paciente.data_nascimento
 
@@ -56,10 +56,7 @@ def update_paciente(db: Session, paciente_id: int, paciente_data: PacienteUpdate
     return paciente
 
 def delete_paciente(db: Session, paciente_id: int):
-    paciente = db.query(Paciente).filter(Paciente.id_paciente == paciente_id).first()
-    if not paciente:
-        logger.error(f"Paciente não encontrado com id: {paciente_id}")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paciente não encontrado")
+    paciente = get_paciente_by_id(db, paciente_id)
 
     db.delete(paciente)
     db.commit()

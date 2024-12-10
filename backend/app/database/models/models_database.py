@@ -16,7 +16,7 @@ class Usuario(Base):
     email = Column(String(255), unique=True, nullable=False)
     senha_hash = Column(String(255), nullable=False)
     tipo = Column(SqlEnum(Tipo_Usuario), default=Tipo_Usuario.paciente, nullable=False)
-    data_criacao = Column(TIMESTAMP, default=func.now())
+    data_criacao = Column(TIMESTAMP, default=func.now(), nullable=False)
 
     medico = relationship("Medico", back_populates="usuario", uselist=False)
     paciente = relationship("Paciente", back_populates="usuario", uselist=False)

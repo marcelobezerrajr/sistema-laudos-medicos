@@ -8,7 +8,10 @@ from app.schemas.schemas_medico import MedicoCreate, MedicoUpdate
 logger = logging.getLogger(__name__)
 
 def get_all_medicos(db: Session):
-    return db.query(Medico).all()
+    medicos = db.query(Medico).all()
+    if not medicos:
+        logger.warning("Nenhum médico encontrado.")
+    return medicos
 
 def get_medico_by_id(db: Session, medico_id: int):
     medico = db.query(Medico).filter(Medico.id_medico == medico_id).first()
@@ -48,10 +51,7 @@ def create_medico(db: Session, medico_data: MedicoCreate):
         raise
 
 def update_medico(db: Session, medico_id: int, medico_data: MedicoUpdate):
-    medico = db.query(Medico).filter(Medico.id_medico == medico_id).first()
-    if not medico:
-        logger.error(f"Médico não encontrado com id: {medico_id}")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Médico não encontrado")
+    medico = get_medico_by_id(db, medico_id)
     
     medico.especialidade = medico_data.especialidade or medico.especialidade
     medico.crm = medico_data.crm or medico.crm
@@ -62,10 +62,7 @@ def update_medico(db: Session, medico_id: int, medico_data: MedicoUpdate):
     return medico
 
 def delete_medico(db: Session, medico_id: int):
-    medico = db.query(Medico).filter(Medico.id_medico == medico_id).first()
-    if not medico:
-        logger.error(f"Médico não encontrado com id: {medico_id}")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Médico não encontrado")
+    medico = get_medico_by_id(db, medico_id)
 
     db.delete(medico)
     db.commit()
