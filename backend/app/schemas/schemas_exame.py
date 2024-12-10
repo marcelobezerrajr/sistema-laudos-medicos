@@ -24,8 +24,8 @@ class ExameUpdate(BaseModel):
 
 class ExameOut(ExameBase):
     id_exame: int
-    id_paciente: int
     data_envio: datetime
+    id_paciente: int
     paciente: PacienteOut
 
     class Config:
