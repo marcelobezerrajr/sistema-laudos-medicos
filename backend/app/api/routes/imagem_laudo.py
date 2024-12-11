@@ -6,7 +6,7 @@ import os
 import logging
 
 from app.services.services_imagem_laudo import create_imagem_laudo, get_imagem_laudo, list_imagens_por_laudo, delete_imagem_laudo
-from app.api.depends import get_db, get_medico
+from app.api.depends import get_db, get_medico, get_medico_paciente
 from app.schemas.schemas_imagem_laudo import ImagemLaudoOut
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ async def upload_imagem_laudo(id_laudo: int, descricao: str, file: UploadFile = 
         raise HTTPException(status_code=500, detail="Erro ao fazer o upload da imagem do Laudo")
 
 @imagem_laudo_router.get("/{id_imagem}", response_model=ImagemLaudoOut)
-def get_imagem_laudo(id_imagem: int, db: Session = Depends(get_db)):
+def get_imagem_laudo(id_imagem: int, db: Session = Depends(get_db), current_user = Depends(get_medico_paciente)):
     try:
         return get_imagem_laudo(db, id_imagem)
     except Exception as e:
@@ -45,7 +45,7 @@ def get_imagem_laudo(id_imagem: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Erro ao listar a imagem do Laudo")
 
 @imagem_laudo_router.get("/list/{id_laudo}", response_model=List[ImagemLaudoOut])
-def list_imagens_laudo(id_laudo: int, db: Session = Depends(get_db)):
+def list_imagens_laudo(id_laudo: int, db: Session = Depends(get_db), current_user = Depends(get_medico_paciente)):
     try:
         return list_imagens_por_laudo(db, id_laudo)
     except Exception as e:
@@ -53,7 +53,7 @@ def list_imagens_laudo(id_laudo: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Erro ao listar a imagens do Laudo")
 
 @imagem_laudo_router.delete("/delete/{id_imagem}")
-def delete_imagem_laudo(id_imagem: int, db: Session = Depends(get_db)):
+def delete_imagem_laudo(id_imagem: int, db: Session = Depends(get_db), current_user = Depends(get_medico_paciente)):
     try:
         return delete_imagem_laudo(db, id_imagem)
     except Exception as e:

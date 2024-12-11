@@ -6,7 +6,7 @@ import os
 import logging
 
 from app.services.services_imagem_exame import create_imagem_exame, get_imagem_exame, list_imagens_por_exame, delete_imagem_exame
-from app.api.depends import get_db, get_paciente
+from app.api.depends import get_db, get_paciente, get_medico_paciente
 from app.schemas.schemas_imagem_exame import ImagemExameOut
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ async def upload_imagem(id_exame: int, descricao: str, file: UploadFile = File(.
         raise HTTPException(status_code=500, detail="Erro ao fazer o upload da imagem do Exame")
 
 @imagem_exame_router.get("/view/{id_imagem}", response_model=ImagemExameOut)
-def get_imagem(id_imagem: int, db: Session = Depends(get_db)):
+def get_imagem(id_imagem: int, db: Session = Depends(get_db), current_user = Depends(get_medico_paciente)):
     try:
         return get_imagem_exame(db, id_imagem)
     except Exception as e:
@@ -45,7 +45,7 @@ def get_imagem(id_imagem: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Erro ao listar a imagem do Exame")
 
 @imagem_exame_router.get("/list/{id_exame}", response_model=List[ImagemExameOut])
-def list_imagens_exame(id_exame: int, db: Session = Depends(get_db)):
+def list_imagens_exame(id_exame: int, db: Session = Depends(get_db), current_user = Depends(get_medico_paciente)):
     try:
         return list_imagens_por_exame(db, id_exame)
     except Exception as e:
@@ -53,7 +53,7 @@ def list_imagens_exame(id_exame: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Erro ao listar as imagens do Exame")
 
 @imagem_exame_router.delete("/delete/{id_imagem}")
-def delete_imagem(id_imagem: int, db: Session = Depends(get_db)):
+def delete_imagem(id_imagem: int, db: Session = Depends(get_db), current_user = Depends(get_medico_paciente)):
     try:
         return delete_imagem_exame(db, id_imagem)
     except Exception as e:

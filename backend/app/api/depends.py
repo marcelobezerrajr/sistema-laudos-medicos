@@ -14,11 +14,11 @@ def get_db():
     finally:
         db.close()
 
-def get_current_usuario(usuario_id: int, db: Session = Depends(get_db)) -> Usuario:
+def get_current_usuario(id_usuario: int, db: Session = Depends(get_db)) -> Usuario:
     usuario = db.query(Usuario).filter(
-        Usuario.id_usuario == usuario_id).first()
+        Usuario.id_usuario == id_usuario).first()
     if usuario is None:
-        logger.warning(f"Usuário com ID {usuario_id} não encontrado.")
+        logger.warning(f"Usuário com ID {id_usuario} não encontrado.")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Usuário não encontrado"
