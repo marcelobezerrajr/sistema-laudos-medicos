@@ -76,6 +76,17 @@ class Laudo(Base):
     id_medico = Column(Integer, ForeignKey('medicos.id_medico', ondelete='CASCADE'), nullable=False)
     conteudo = Column(Text, nullable=False)
     data_criacao = Column(TIMESTAMP, default=func.now(), nullable=False)
-    
+
     exame = relationship("Exame", back_populates="laudo")
     medico = relationship("Medico", back_populates="laudos")
+    imagens = relationship("ImagemLaudo", back_populates="laudo")
+
+class ImagemLaudo(Base):
+    __tablename__ = 'imagens_laudo'
+
+    id_imagem = Column(Integer, primary_key=True, autoincrement=True)
+    id_laudo = Column(Integer, ForeignKey('laudos.id_laudo', ondelete='CASCADE'), nullable=False)
+    caminho_arquivo = Column(String(255), nullable=False)
+    descricao = Column(String(255))
+
+    laudo = relationship("Laudo", back_populates="imagens")

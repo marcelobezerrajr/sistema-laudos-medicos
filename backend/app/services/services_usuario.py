@@ -21,27 +21,23 @@ def get_usuario_by_id(db: Session, usuario_id: int):
     return usuario
 
 def create_usuario(db: Session, user_form: UsuarioCreate) -> Usuario:
-    try:
-        if db.query(Usuario).filter(Usuario.email == user_form.email).first():
-            logger.warning(f"Tentativa de criar um usuário com e-mail existente: {user_form.email}")
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="E-mail já cadastrado")
+    if db.query(Usuario).filter(Usuario.email == user_form.email).first():
+        logger.warning(f"Tentativa de criar um usuário com e-mail existente: {user_form.email}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="E-mail já cadastrado")
 
-        new_user = Usuario(
-            nome=user_form.nome,
-            email=user_form.email,
-            senha_hash=user_form.senha_hash,
-            tipo=user_form.tipo,
-            data_criacao=user_form.data_criacao
-        )
+    new_user = Usuario(
+        nome=user_form.nome,
+        email=user_form.email,
+        senha_hash=user_form.senha_hash,
+        tipo=user_form.tipo,
+        data_criacao=user_form.data_criacao
+    )
 
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        logger.info(f"Usuário {new_user.email} criado com sucesso.")
-        return new_user
-    except Exception as e:
-        logger.error(f"Erro ao criar usuário {user_form.email}: {str(e)}")
-        raise
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    logger.info(f"Usuário {new_user.email} criado com sucesso.")
+    return new_user
 
 def update_usuario(db: Session, usuario_id: int, user_form: UsuarioUpdate):
     usuario = get_usuario_by_id(db, usuario_id)

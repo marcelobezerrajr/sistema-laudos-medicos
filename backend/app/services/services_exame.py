@@ -21,26 +21,22 @@ def get_exame_by_id(db: Session, exame_id: int):
     return exame
 
 def create_exame(db: Session, exame_data: ExameCreate):
-    try:
-        paciente = db.query(Paciente).filter(Paciente.id_paciente == exame_data.id_paciente).first()
-        if not paciente:
-            logger.error(f"Paciente não encontrado com id: {exame_data.id_paciente}")
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paciente não encontrado")
+    paciente = db.query(Paciente).filter(Paciente.id_paciente == exame_data.id_paciente).first()
+    if not paciente:
+        logger.error(f"Paciente não encontrado com id: {exame_data.id_paciente}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paciente não encontrado")
 
-        new_exame = Exame(
-            id_paciente=exame_data.id_paciente,
-            tipo_exame=exame_data.tipo_exame,
-            status=exame_data.status
-        )
-        
-        db.add(new_exame)
-        db.commit()
-        db.refresh(new_exame)
-        logger.info(f"Exame criado com sucesso: {new_exame.id_exame}")
-        return new_exame
-    except Exception as e:
-        logger.error(f"Erro ao criar Exame: {str(e)}")
-        raise
+    new_exame = Exame(
+        id_paciente=exame_data.id_paciente,
+        tipo_exame=exame_data.tipo_exame,
+        status=exame_data.status
+    )
+    
+    db.add(new_exame)
+    db.commit()
+    db.refresh(new_exame)
+    logger.info(f"Exame criado com sucesso: {new_exame.id_exame}")
+    return new_exame
 
 def update_exame(db: Session, exame_id: int, exame_data: ExameUpdate):
     exame = get_exame_by_id(db, exame_id)

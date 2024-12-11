@@ -21,30 +21,26 @@ def get_laudo_by_id(db: Session, laudo_id: int):
     return laudo
 
 def create_laudo(db: Session, laudo_data: LaudoCreate):
-    try:
-        exame = db.query(Exame).filter(Exame.id_exame == laudo_data.id_exame).first()
-        if not exame:
-            logger.error(f"Exame não encontrado com id: {laudo_data.id_exame}")
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Exame não encontrado")
-        
-        medico = db.query(Medico).filter(Medico.id_medico == laudo_data.id_medico).first()
-        if not medico:
-            logger.error(f"Médico não encontrado com id: {laudo_data.id_medico}")
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Médico não encontrado")
+    exame = db.query(Exame).filter(Exame.id_exame == laudo_data.id_exame).first()
+    if not exame:
+        logger.error(f"Exame não encontrado com id: {laudo_data.id_exame}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Exame não encontrado")
+    
+    medico = db.query(Medico).filter(Medico.id_medico == laudo_data.id_medico).first()
+    if not medico:
+        logger.error(f"Médico não encontrado com id: {laudo_data.id_medico}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Médico não encontrado")
 
-        new_laudo = Laudo(
-            id_exame=laudo_data.id_exame,
-            id_medico=laudo_data.id_medico,
-            conteudo=laudo_data.conteudo
-        )
-        db.add(new_laudo)
-        db.commit()
-        db.refresh(new_laudo)
-        logger.info(f"Laudo criado com sucesso: {new_laudo.id_laudo}")
-        return new_laudo
-    except Exception as e:
-        logger.error(f"Erro ao criar Laudo: {str(e)}")
-        raise
+    new_laudo = Laudo(
+        id_exame=laudo_data.id_exame,
+        id_medico=laudo_data.id_medico,
+        conteudo=laudo_data.conteudo
+    )
+    db.add(new_laudo)
+    db.commit()
+    db.refresh(new_laudo)
+    logger.info(f"Laudo criado com sucesso: {new_laudo.id_laudo}")
+    return new_laudo
 
 def update_laudo(db: Session, laudo_id: int, laudo_data: LaudoUpdate):
     laudo = db.query(Laudo).filter(Laudo.id_laudo == laudo_id).first()

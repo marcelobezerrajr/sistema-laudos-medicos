@@ -21,29 +21,25 @@ def get_paciente_by_id(db: Session, paciente_id: int):
     return paciente
 
 def create_paciente(db: Session, paciente_data: PacienteCreate):
-    try:
-        usuario = db.query(Usuario).filter(Usuario.id_usuario == paciente_data.id_usuario).first()
-        if not usuario:
-            logger.error(f"Usuário não encontrado com id: {paciente_data.id_usuario}")
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
-        
-        if usuario.tipo != 'paciente':
-            logger.error(f"Usuário com o id: {paciente_data.id_usuario} não é paciente, operação não permitida.")
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuário não é paciente")
-        
-        new_paciente = Paciente(
-            id_paciente=paciente_data.id_usuario,
-            data_nascimento=paciente_data.data_nascimento,
-        )
+    usuario = db.query(Usuario).filter(Usuario.id_usuario == paciente_data.id_usuario).first()
+    if not usuario:
+        logger.error(f"Usuário não encontrado com id: {paciente_data.id_usuario}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+    
+    if usuario.tipo != 'paciente':
+        logger.error(f"Usuário com o id: {paciente_data.id_usuario} não é paciente, operação não permitida.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuário não é paciente")
+    
+    new_paciente = Paciente(
+        id_paciente=paciente_data.id_usuario,
+        data_nascimento=paciente_data.data_nascimento,
+    )
 
-        db.add(new_paciente)
-        db.commit()
-        db.refresh(new_paciente)
-        logger.info(f"Paciente com o id {new_paciente.id_paciente} criado com sucesso!")
-        return new_paciente
-    except Exception as e:
-        logger.error(f"Erro ao criar paciente: {str(e)}")
-        raise
+    db.add(new_paciente)
+    db.commit()
+    db.refresh(new_paciente)
+    logger.info(f"Paciente com o id {new_paciente.id_paciente} criado com sucesso!")
+    return new_paciente
 
 def update_paciente(db: Session, paciente_id: int, paciente_data: PacienteUpdate):
     paciente = get_paciente_by_id(db, paciente_id)

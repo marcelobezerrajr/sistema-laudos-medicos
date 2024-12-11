@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 import logging
 
 from app.database.database import Base, engine
-from app.api.routes import usuario, medico, paciente, exame, laudo
+from app.api.routes import usuario, medico, paciente, exame, laudo, imagem_exame, imagem_laudo
 
 app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
@@ -17,6 +17,8 @@ def configure_routes(app: FastAPI):
     app.include_router(paciente.paciente_router, tags=["Paciente"])
     app.include_router(exame.exame_router, tags=["Exame"])
     app.include_router(laudo.laudo_router, tags=["Laudo"])
+    app.include_router(imagem_exame.imagem_exame_router, tags=["Imagem Exame"])
+    app.include_router(imagem_laudo.imagem_laudo_router, tags=["Imagem Laudo"])
 
 def configure_db():
     Base.metadata.create_all(bind=engine)
