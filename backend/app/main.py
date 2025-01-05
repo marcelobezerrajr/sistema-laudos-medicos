@@ -7,9 +7,11 @@ from app.api.routes import usuario, medico, paciente, exame, laudo, imagem_exame
 
 app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
+
 def configure_all(app: FastAPI):
     configure_routes(app)
     configure_db()
+
 
 def configure_routes(app: FastAPI):
     app.include_router(usuario.usuario_router, tags=["Usuário"])
@@ -20,18 +22,23 @@ def configure_routes(app: FastAPI):
     app.include_router(imagem_exame.imagem_exame_router, tags=["Imagem Exame"])
     app.include_router(imagem_laudo.imagem_laudo_router, tags=["Imagem Laudo"])
 
+
 def configure_db():
     Base.metadata.create_all(bind=engine)
+
 
 @app.exception_handler(Exception)
 def global_exception_handler(request: Request, exc: Exception):
     logging.error(f"Unexpected error: {exc}")
     return JSONResponse(
         status_code=500,
-        content={"message": "Internal server error", "details": str(exc), "request": request.url},
+        content={"message": "Internal server error",
+                 "details": str(exc), "request": request.url},
     )
 
+
 configure_all(app)
+
 
 @app.get("/")
 def root():

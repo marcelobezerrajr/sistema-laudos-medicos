@@ -11,40 +11,46 @@ logger = logging.getLogger(__name__)
 
 medico_router = APIRouter(prefix="/medico")
 
+
 @medico_router.get("/list", response_model=List[MedicoOut])
-def list_medicos_route(db: Session = Depends(get_db), current_user = Depends(get_current_usuario)):
+def list_medicos_route(db: Session = Depends(get_db), current_user=Depends(get_current_usuario)):
     try:
         return get_all_medicos(db)
     except Exception as e:
         logger.error(f"Erro ao listar todos os Médicos: {str(e)}")
         raise HTTPException(status_code=500, detail="Erro ao listar Médicos")
 
+
 @medico_router.get("/view/{id_medico}", response_model=MedicoOut)
-def view_medico_route(id_medico: int, db: Session = Depends(get_db), current_user = Depends(get_current_usuario)):
+def view_medico_route(id_medico: int, db: Session = Depends(get_db), current_user=Depends(get_current_usuario)):
     try:
         return get_medico_by_id(db, id_medico)
     except Exception as e:
         logger.error(f"Erro ao listar o Médico: {str(e)}")
         raise HTTPException(status_code=500, detail="Erro ao listar o Médico")
 
+
 @medico_router.post("/create", response_model=MedicoOut)
-def add_medico_route(medico: MedicoCreate, db: Session = Depends(get_db), current_user = Depends(get_current_usuario)):
+def add_medico_route(medico: MedicoCreate, db: Session = Depends(get_db), current_user=Depends(get_current_usuario)):
     try:
         return create_medico(db, medico)
     except Exception as e:
         logger.error(f"Erro ao criar o Médico: {str(e)}")
         raise HTTPException(status_code=500, detail="Erro ao criar o Médico")
 
+
 @medico_router.put("/update/{id_medico}", response_model=MedicoOut)
-def update_medico_route(id_medico: int, medico: MedicoUpdate, db: Session = Depends(get_db), current_user = Depends(get_current_usuario)):
+def update_medico_route(id_medico: int, medico: MedicoUpdate, db: Session = Depends(get_db), current_user=Depends(get_current_usuario)):
     try:
         return update_medico(db, id_medico, medico)
     except Exception as e:
         logger.error(f"Erro ao atualizar o Médico: {str(e)}")
-        raise HTTPException(status_code=500, detail="Erro ao atualizar o Médico")
+        raise HTTPException(
+            status_code=500, detail="Erro ao atualizar o Médico")
+
 
 @medico_router.delete("/delete/{id_medico}", response_model=MedicoOut)
-def delete_medico_route(id_medico: int, db: Session = Depends(get_db), current_user = Depends(get_current_usuario)):
+def delete_medico_route(id_medico: int, db: Session = Depends(get_db), current_user=Depends(get_current_usuario)):
     try:
         return delete_medico(db, id_medico)
     except Exception as e:

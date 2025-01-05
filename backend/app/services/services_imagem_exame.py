@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 UPLOAD_DIR = "uploads/exames/"
 
+
 def create_imagem_exame(db: Session, id_exame: int, caminho_arquivo: str, descricao: str = None) -> ImagemExame:
     exame = db.query(Exame).filter(Exame.id_exame == id_exame).first()
     if not exame:
@@ -30,8 +31,10 @@ def create_imagem_exame(db: Session, id_exame: int, caminho_arquivo: str, descri
     logger.info(f"Imagem adicionada ao exame {id_exame}: {caminho_arquivo}")
     return nova_imagem
 
+
 def get_imagem_exame(db: Session, id_imagem: int) -> ImagemExame:
-    imagem = db.query(ImagemExame).filter(ImagemExame.id_imagem == id_imagem).first()
+    imagem = db.query(ImagemExame).filter(
+        ImagemExame.id_imagem == id_imagem).first()
     if not imagem:
         logger.error(f"Imagem com ID {id_imagem} não encontrada.")
         raise HTTPException(
@@ -40,16 +43,21 @@ def get_imagem_exame(db: Session, id_imagem: int) -> ImagemExame:
         )
     return imagem
 
+
 def list_imagens_por_exame(db: Session, id_exame: int) -> list[ImagemExame]:
-    imagens = db.query(ImagemExame).filter(ImagemExame.id_exame == id_exame).all()
+    imagens = db.query(ImagemExame).filter(
+        ImagemExame.id_exame == id_exame).all()
     if not imagens:
         logger.warning(f"Nenhuma imagem encontrada para o exame {id_exame}.")
     return imagens
 
+
 def delete_imagem_exame(db: Session, id_imagem: int):
-    imagem = db.query(ImagemExame).filter(ImagemExame.id_imagem == id_imagem).first()
+    imagem = db.query(ImagemExame).filter(
+        ImagemExame.id_imagem == id_imagem).first()
     if not imagem:
-        logger.error(f"Imagem com ID {id_imagem} não encontrada para exclusão.")
+        logger.error(f"Imagem com ID {
+                     id_imagem} não encontrada para exclusão.")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Imagem não encontrada para exclusão."
@@ -57,7 +65,8 @@ def delete_imagem_exame(db: Session, id_imagem: int):
 
     if os.path.exists(imagem.caminho_arquivo):
         os.remove(imagem.caminho_arquivo)
-        logger.info(f"Arquivo físico {imagem.caminho_arquivo} removido com sucesso.")
+        logger.info(f"Arquivo físico {
+                    imagem.caminho_arquivo} removido com sucesso.")
 
     db.delete(imagem)
     db.commit()

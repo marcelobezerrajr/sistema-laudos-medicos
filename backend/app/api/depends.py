@@ -7,12 +7,14 @@ from app.database.models.models_database import Usuario, Tipo_Usuario
 
 logger = logging.getLogger(__name__)
 
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
 
 def get_current_usuario(id_usuario: int, db: Session = Depends(get_db)) -> Usuario:
     usuario = db.query(Usuario).filter(
@@ -24,6 +26,7 @@ def get_current_usuario(id_usuario: int, db: Session = Depends(get_db)) -> Usuar
             detail="Usuário não encontrado"
         )
     return usuario
+
 
 def check_usuario_role(
     usuario: Usuario,
@@ -38,6 +41,7 @@ def check_usuario_role(
         )
     return usuario
 
+
 def get_medico(current_user: Usuario = Depends(get_current_usuario)) -> Usuario:
     return check_usuario_role(
         current_user,
@@ -45,12 +49,14 @@ def get_medico(current_user: Usuario = Depends(get_current_usuario)) -> Usuario:
         mensagem_erro="Acesso permitido apenas para médicos."
     )
 
+
 def get_paciente(current_user: Usuario = Depends(get_current_usuario)) -> Usuario:
     return check_usuario_role(
         current_user,
         roles_permitidos=[Tipo_Usuario.paciente],
         mensagem_erro="Acesso permitido apenas para pacientes."
     )
+
 
 def get_medico_paciente(current_user: Usuario = Depends(get_current_usuario)) -> Usuario:
     return check_usuario_role(

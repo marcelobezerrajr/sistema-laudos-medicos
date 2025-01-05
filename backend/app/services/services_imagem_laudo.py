@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 UPLOAD_DIR = "uploads/laudos/"
 
+
 def create_imagem_laudo(db: Session, id_laudo: int, caminho_arquivo: str, descricao: str = None) -> ImagemLaudo:
     laudo = db.query(Laudo).filter(Laudo.id_laudo == id_laudo).first()
     if not laudo:
@@ -30,8 +31,10 @@ def create_imagem_laudo(db: Session, id_laudo: int, caminho_arquivo: str, descri
     logger.info(f"Imagem adicionada ao laudo {id_laudo}: {caminho_arquivo}")
     return nova_imagem
 
+
 def get_imagem_laudo(db: Session, id_imagem: int) -> ImagemLaudo:
-    imagem = db.query(ImagemLaudo).filter(ImagemLaudo.id_imagem == id_imagem).first()
+    imagem = db.query(ImagemLaudo).filter(
+        ImagemLaudo.id_imagem == id_imagem).first()
     if not imagem:
         logger.error(f"Imagem de laudo com ID {id_imagem} não encontrada.")
         raise HTTPException(
@@ -40,16 +43,21 @@ def get_imagem_laudo(db: Session, id_imagem: int) -> ImagemLaudo:
         )
     return imagem
 
+
 def list_imagens_por_laudo(db: Session, id_laudo: int) -> list[ImagemLaudo]:
-    imagens = db.query(ImagemLaudo).filter(ImagemLaudo.id_laudo == id_laudo).all()
+    imagens = db.query(ImagemLaudo).filter(
+        ImagemLaudo.id_laudo == id_laudo).all()
     if not imagens:
         logger.warning(f"Nenhuma imagem encontrada para o laudo {id_laudo}.")
     return imagens
 
+
 def delete_imagem_laudo(db: Session, id_imagem: int):
-    imagem = db.query(ImagemLaudo).filter(ImagemLaudo.id_imagem == id_imagem).first()
+    imagem = db.query(ImagemLaudo).filter(
+        ImagemLaudo.id_imagem == id_imagem).first()
     if not imagem:
-        logger.error(f"Imagem de laudo com ID {id_imagem} não encontrada para exclusão.")
+        logger.error(f"Imagem de laudo com ID {
+                     id_imagem} não encontrada para exclusão.")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Imagem de laudo não encontrada para exclusão."
@@ -57,9 +65,11 @@ def delete_imagem_laudo(db: Session, id_imagem: int):
 
     if os.path.exists(imagem.caminho_arquivo):
         os.remove(imagem.caminho_arquivo)
-        logger.info(f"Arquivo físico {imagem.caminho_arquivo} removido com sucesso.")
+        logger.info(f"Arquivo físico {
+                    imagem.caminho_arquivo} removido com sucesso.")
 
     db.delete(imagem)
     db.commit()
-    logger.info(f"Imagem de laudo com ID {id_imagem} deletada do banco de dados.")
+    logger.info(f"Imagem de laudo com ID {
+                id_imagem} deletada do banco de dados.")
     return {"detail": "Imagem de laudo deletada com sucesso."}

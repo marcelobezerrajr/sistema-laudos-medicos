@@ -5,6 +5,7 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 logger = logging.getLogger(__name__)
 
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         result = pwd_context.verify(plain_password, hashed_password)
@@ -13,6 +14,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     except Exception as e:
         logger.error(f"Falha na verificação da senha: {str(e)}")
         return False
+
 
 def get_password_hash(password: str) -> str:
     try:

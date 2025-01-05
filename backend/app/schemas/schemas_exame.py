@@ -5,6 +5,7 @@ from datetime import datetime
 from app.database.models.models_database import Status_Exame
 from app.schemas.schemas_paciente import PacienteOut
 
+
 class ExameBase(BaseModel):
     tipo_exame: str
     status: Status_Exame
@@ -12,8 +13,10 @@ class ExameBase(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ExameCreate(ExameBase):
     id_paciente: int
+
 
 class ExameUpdate(BaseModel):
     tipo_exame: Optional[str] = None
@@ -21,6 +24,7 @@ class ExameUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class ExameOut(ExameBase):
     id_exame: int
