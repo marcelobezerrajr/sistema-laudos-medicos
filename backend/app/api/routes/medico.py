@@ -10,8 +10,13 @@ from app.services.services_medico import (
     update_medico,
     delete_medico,
 )
+from app.schemas.schemas_medico import (
+    MedicoCreate,
+    MedicoUpdate,
+    MedicoOut,
+    MensagemResposta,
+)
 from app.database.models.models_database import Usuario
-from app.schemas.schemas_medico import MedicoCreate, MedicoUpdate, MedicoOut
 from app.api.depends import get_db, get_current_usuario
 
 logging.basicConfig(level=logging.INFO)
@@ -84,7 +89,7 @@ def update_medico_route(
         )
 
 
-@medico_router.delete("/delete/{id_medico}", response_model=MedicoOut)
+@medico_router.delete("/delete/{id_medico}", response_model=MensagemResposta)
 def delete_medico_route(
     id_medico: int,
     db: Session = Depends(get_db),
@@ -94,8 +99,10 @@ def delete_medico_route(
         f"O usuário {current_user.nome} está excluindo o médico com ID {id_medico}."
     )
     try:
-        return delete_medico(db, id_medico)
+        delete_medico(db, id_medico)
+        return {"message": f"Médico com ID {id_medico} deletado com sucesso."}
     except Exception as e:
+        logger.error(f"Erro ao excluir médico: {str(e)}")
         raise HTTPException(
             status_code=500, detail=f"Erro ao deletar o Médico - {str(e)}"
         )

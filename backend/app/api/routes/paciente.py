@@ -10,8 +10,13 @@ from app.services.services_paciente import (
     update_paciente,
     delete_paciente,
 )
+from app.schemas.schemas_paciente import (
+    PacienteCreate,
+    PacienteUpdate,
+    PacienteOut,
+    MensagemResposta,
+)
 from app.database.models.models_database import Usuario
-from app.schemas.schemas_paciente import PacienteCreate, PacienteUpdate, PacienteOut
 from app.api.depends import get_db, get_current_usuario
 
 logging.basicConfig(level=logging.INFO)
@@ -84,7 +89,7 @@ def update_paciente_route(
         )
 
 
-@paciente_router.delete("/delete/{id_paciente}", response_model=PacienteOut)
+@paciente_router.delete("/delete/{id_paciente}", response_model=MensagemResposta)
 def delete_paciente_route(
     id_paciente: int,
     db: Session = Depends(get_db),
@@ -94,8 +99,10 @@ def delete_paciente_route(
         f"O usuário {current_user.nome} está excluindo o paciente com ID {id_paciente}."
     )
     try:
-        return delete_paciente(db, id_paciente)
+        delete_paciente(db, id_paciente)
+        return {"message": f"Paciente com ID {id_paciente} deletado com sucesso."}
     except Exception as e:
+        logger.error(f"Erro ao excluir paciente: {str(e)}")
         raise HTTPException(
             status_code=500, detail=f"Erro ao deletar o Paciente - {str(e)}"
         )

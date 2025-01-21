@@ -52,6 +52,18 @@ def create_paciente(db: Session, paciente_data: PacienteCreate):
             status_code=status.HTTP_400_BAD_REQUEST, detail="Usuário não é paciente"
         )
 
+    paciente = (
+        db.query(Paciente)
+        .filter(Paciente.id_paciente == paciente_data.id_usuario)
+        .first()
+    )
+    if paciente:
+        logger.error(f"Paciente com o id {paciente_data.id_usuario} já existe")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Paciente com o id {paciente_data.id_usuario} já existe",
+        )
+
     new_paciente = Paciente(
         id_paciente=paciente_data.id_usuario,
         data_nascimento=paciente_data.data_nascimento,
@@ -85,4 +97,4 @@ def delete_paciente(db: Session, paciente_id: int):
     logger.info(
         f"Paciente com id {paciente_id} deletado com sucesso do banco de dados."
     )
-    return paciente
+    return {"message": f"Paciente com ID {paciente_id} deletado com sucesso."}

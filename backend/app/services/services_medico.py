@@ -73,7 +73,10 @@ def create_medico(db: Session, medico_data: MedicoCreate):
 
 def update_medico(db: Session, medico_id: int, medico_data: MedicoUpdate):
     logger.info(f"Atualizando médico com o ID {medico_id}.")
-    if db.query(Medico).filter(Medico.crm == medico_data.crm).first():
+    if (
+        medico_data.crm
+        and db.query(Medico).filter(Medico.crm == medico_data.crm).first()
+    ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="CRM já cadastrado"
         )
@@ -95,7 +98,5 @@ def delete_medico(db: Session, medico_id: int):
 
     db.delete(medico)
     db.commit()
-    logger.info(
-        f"Médico com ID {medico_id} deletado com sucesso do banco de dados."
-    )
-    return medico
+    logger.info(f"Médico com ID {medico_id} deletado com sucesso do banco de dados.")
+    return {"message": f"Médico com ID {medico_id} deletado com sucesso."}

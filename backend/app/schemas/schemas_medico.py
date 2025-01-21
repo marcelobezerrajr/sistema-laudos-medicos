@@ -17,7 +17,7 @@ class MedicoCreate(MedicoBase):
 
 class MedicoUpdate(BaseModel):
     especialidade: Optional[str] = None
-    crm: Optional[str] = None
+    crm: Optional[str] = Field(None, pattern=r"^\d{6}$")
 
     class Config:
         from_attributes = True
@@ -29,3 +29,7 @@ class MedicoOut(MedicoBase):
 
     class Config:
         from_attributes = True
+
+
+class MensagemResposta(BaseModel):
+    message: str

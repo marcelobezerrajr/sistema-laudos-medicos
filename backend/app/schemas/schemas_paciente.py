@@ -29,3 +29,7 @@ class PacienteOut(PacienteBase):
 
     class Config:
         from_attributes = True
+
+
+class MensagemResposta(BaseModel):
+    message: str
