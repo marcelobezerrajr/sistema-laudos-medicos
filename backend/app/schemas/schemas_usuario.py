@@ -18,13 +18,13 @@ class UsuarioBase(BaseModel):
     class Config:
         from_attributes = True
 
-    @validator('nome')
+    @validator("nome")
     def validate_nome(cls, value):
-        if not re.match(r'^[a-zA-ZÀ-ÿ\s]+$', value):
-            raise ValueError('Nome está no formato inválido')
+        if not re.match(r"^[a-zA-ZÀ-ÿ\s]+$", value):
+            raise ValueError("Nome está no formato inválido")
         return value
 
-    @validator('senha_hash', pre=True)
+    @validator("senha_hash", pre=True)
     def validate_and_hash_password(cls, value):
         validate_password(value)
         return get_password_hash(value)
@@ -49,10 +49,10 @@ class UsuarioUpdate(BaseModel):
     class Config:
         from_attributes = True
 
-    @validator('nome', pre=True, always=True)
+    @validator("nome", pre=True, always=True)
     def validate_nome(cls, value):
-        if value and not re.match(r'^[a-zA-ZÀ-ÿ\s]+$', value):
-            raise ValueError('Nome está no formato inválido')
+        if value and not re.match(r"^[a-zA-ZÀ-ÿ\s]+$", value):
+            raise ValueError("Nome está no formato inválido")
         return value
 
 

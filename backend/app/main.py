@@ -3,7 +3,15 @@ from fastapi.responses import JSONResponse
 import logging
 
 from app.database.database import Base, engine
-from app.api.routes import usuario, medico, paciente, exame, laudo, imagem_exame, imagem_laudo
+from app.api.routes import (
+    usuario,
+    medico,
+    paciente,
+    exame,
+    laudo,
+    imagem_exame,
+    imagem_laudo,
+)
 
 app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 
@@ -32,8 +40,11 @@ def global_exception_handler(request: Request, exc: Exception):
     logging.error(f"Unexpected error: {exc}")
     return JSONResponse(
         status_code=500,
-        content={"message": "Internal server error",
-                 "details": str(exc), "request": request.url},
+        content={
+            "message": "Internal server error",
+            "details": str(exc),
+            "request": request.url,
+        },
     )
 
 

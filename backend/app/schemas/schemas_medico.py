@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from app.schemas.schemas_usuario import UsuarioOut
 
 
 class MedicoBase(BaseModel):
     especialidade: str
-    crm: str
+    crm: str = Field(..., pattern=r"^\d{6}$")
 
     class Config:
         from_attributes = True
