@@ -56,7 +56,9 @@ Este é um sistema backend projetado para gerenciar laudos médicos, permitindo 
 
 **Back-end:** FastApi
 
-**SQL:** Sqlite
+**SQL:** Sqlite e SQLAlchemy
+
+<img src="https://skillicons.dev/icons?i=python,fastapi,git,sqlite&theme=dark" />
 
 ## Documentação da API - CRUD
 
