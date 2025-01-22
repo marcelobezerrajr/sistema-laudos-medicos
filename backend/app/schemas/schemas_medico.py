@@ -17,7 +17,6 @@ class MedicoCreate(MedicoBase):
 
 class MedicoUpdate(BaseModel):
     especialidade: Optional[str] = None
-    crm: Optional[str] = Field(None, pattern=r"^\d{6}$")
 
     class Config:
         from_attributes = True

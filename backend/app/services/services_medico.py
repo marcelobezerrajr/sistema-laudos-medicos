@@ -73,18 +73,17 @@ def create_medico(db: Session, medico_data: MedicoCreate):
 
 def update_medico(db: Session, medico_id: int, medico_data: MedicoUpdate):
     logger.info(f"Atualizando médico com o ID {medico_id}.")
-    if (
-        medico_data.crm
-        and db.query(Medico).filter(Medico.crm == medico_data.crm).first()
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="CRM já cadastrado"
-        )
+    # if (
+    #     medico_data.crm
+    #     and db.query(Medico).filter(Medico.crm == medico_data.crm).first()
+    # ):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST, detail="CRM já cadastrado"
+    #     )
 
     medico = get_medico_by_id(db, medico_id)
 
     medico.especialidade = medico_data.especialidade or medico.especialidade
-    medico.crm = medico_data.crm or medico.crm
 
     db.commit()
     db.refresh(medico)
