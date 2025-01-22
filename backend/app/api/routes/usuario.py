@@ -15,6 +15,7 @@ from app.schemas.schemas_usuario import (
     UsuarioCreate,
     UsuarioUpdate,
     UsuarioListResponse,
+    MensagemResposta,
 )
 from app.database.models.models_database import Usuario
 from app.api.depends import get_db, get_current_usuario
@@ -83,7 +84,7 @@ def update_usuario_route(
         )
 
 
-@usuario_router.delete("/delete/{id_usuario}", response_model=UsuarioBase)
+@usuario_router.delete("/delete/{id_usuario}", response_model=MensagemResposta)
 def delete_usuario_route(
     id_usuario: int,
     db: Session = Depends(get_db),
@@ -93,7 +94,8 @@ def delete_usuario_route(
         f"O usuário {current_user.nome} está excluindo o usuário com ID {id_usuario}."
     )
     try:
-        return delete_usuario(db, id_usuario)
+        delete_usuario(db, id_usuario)
+        return {"message": f"Usuário com ID {id_usuario} deletado com sucesso."}
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Erro ao deletar o Usuário - {str(e)}"
