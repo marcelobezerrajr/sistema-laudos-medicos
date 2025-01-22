@@ -18,7 +18,7 @@ from app.api.depends import get_db, get_medico, get_medico_paciente
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-UPLOAD_DIR = "Laudos-Medicos/uploads/laudos/"
+UPLOAD_DIR = "sistema-laudos-medicos/uploads/laudos/"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 imagem_laudo_router = APIRouter(prefix="/imagens-laudo")
